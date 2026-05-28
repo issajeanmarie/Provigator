@@ -1,0 +1,60 @@
+image: docker:git
+services:
+  - docker:dind
+
+stages:
+  - vercel
+
+variables:
+  NODE_IMAGE_VERSION: node:24-alpine
+
+# -----------------------------------------------------------------------------
+# Vercel deployment
+# In Vercel: project → Settings → General → Root Directory = . (repo root)
+# Disconnect any automatic Git integration in Vercel; GitLab CI drives deploys.
+# Production : pushes to "dev"
+# Preview    : merge requests targeting "dev"
+# Required GitLab CI/CD variables:
+#   VERCEL_TOKEN       – Vercel personal access token
+#   VERCEL_ORG_ID      – Vercel team / personal account ID
+#   VERCEL_PROJECT_ID  – ID of the linked Vercel project
+# -----------------------------------------------------------------------------
+
+.vercel-deploy-base:
+  stage: vercel
+  image: node:24-alpine
+  services: []
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+    GIT_DEPTH: "0"
+  before_script:
+    - npm install -g vercel@latest
+    - |
+      if [ -z "${VERCEL_TOKEN:-}" ] || [ -z "${VERCEL_ORG_ID:-}" ] || [ -z "${VERCEL_PROJECT_ID:-}" ]; then
+        echo "Missing one or more required variables: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID" >&2
+        exit 1
+      fi
+    - export VERCEL_GIT_COMMIT_REF="${CI_COMMIT_REF_NAME}"
+    - export VERCEL_GIT_COMMIT_SHA="${CI_COMMIT_SHA}"
+
+vercel:preview:
+  extends: .vercel-deploy-base
+  script:
+    - cd "${CI_PROJECT_DIR}"
+    - vercel pull --yes --environment=preview --token="${VERCEL_TOKEN}"
+    - vercel build --token="${VERCEL_TOKEN}"
+    - vercel deploy --prebuilt --token="${VERCEL_TOKEN}" --yes
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"
+
+vercel:production:
+  extends: .vercel-deploy-base
+  environment:
+    name: production
+  script:
+    - cd "${CI_PROJECT_DIR}"
+    - vercel pull --yes --environment=production --token="${VERCEL_TOKEN}"
+    - vercel build --prod --token="${VERCEL_TOKEN}"
+    - vercel deploy --prebuilt --prod --token="${VERCEL_TOKEN}" --yes
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
