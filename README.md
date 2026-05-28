@@ -1,4 +1,4 @@
-# Provigator — Awesomity Uptime Monitor
+# Provigator | Awesomity Uptime Monitor
 
 A production-ready internal uptime monitoring dashboard built for Awesomity. Monitor client websites and projects, receive email alerts when services go down, and track uptime history.
 
@@ -44,17 +44,17 @@ cp .env.example .env
 
 Edit `.env` with your configuration:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | SQLite database path | `file:./dev.db` |
-| `JWT_SECRET` | Secret for JWT signing | Must change in production |
-| `SMTP_HOST` | SMTP server host | `smtp.gmail.com` |
-| `SMTP_PORT` | SMTP server port | `587` |
-| `SMTP_USER` | SMTP username/email | — |
-| `SMTP_PASS` | SMTP password/app password | — |
-| `SMTP_FROM` | Sender email address | `Provigator <monitor@awesomity.rw>` |
-| `NEXT_PUBLIC_APP_URL` | Application URL | `http://localhost:3000` |
-| `CRON_SECRET` | Secret for cron endpoint auth | Must change in production |
+| Variable              | Description                   | Default                             |
+| --------------------- | ----------------------------- | ----------------------------------- |
+| `DATABASE_URL`        | SQLite database path          | `file:./dev.db`                     |
+| `JWT_SECRET`          | Secret for JWT signing        | Must change in production           |
+| `SMTP_HOST`           | SMTP server host              | `smtp.gmail.com`                    |
+| `SMTP_PORT`           | SMTP server port              | `587`                               |
+| `SMTP_USER`           | SMTP username/email           | —                                   |
+| `SMTP_PASS`           | SMTP password/app password    | —                                   |
+| `SMTP_FROM`           | Sender email address          | `Provigator <monitor@awesomity.rw>` |
+| `NEXT_PUBLIC_APP_URL` | Application URL               | `http://localhost:3000`             |
+| `CRON_SECRET`         | Secret for cron endpoint auth | Must change in production           |
 
 ### Running
 
@@ -132,8 +132,8 @@ src/
 
 ## Brand Colors
 
-| Color | Hex |
-|-------|-----|
+| Color  | Hex       |
+| ------ | --------- |
 | Accent | `#C1CF16` |
-| Dark | `#0C0D0D` |
-| White | `#FFFFFF` |
+| Dark   | `#0C0D0D` |
+| White  | `#FFFFFF` |

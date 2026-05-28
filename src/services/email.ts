@@ -1,5 +1,5 @@
-import nodemailer from "nodemailer";
 import { getAllActiveSessions } from "@/lib/auth";
+import nodemailer from "nodemailer";
 
 function getTransporter() {
   return nodemailer.createTransport({
@@ -61,7 +61,7 @@ function downEmailHtml(data: {
         </td></tr>
         <tr><td style="padding:0 32px 32px;">
           <p style="color:#737373;font-size:12px;margin:0;border-top:1px solid #333;padding-top:16px;">
-            Provigator — Awesomity Uptime Monitor
+            Provigator | Awesomity Uptime Monitor
           </p>
         </td></tr>
       </table>
@@ -110,7 +110,7 @@ function recoveryEmailHtml(data: {
         </td></tr>
         <tr><td style="padding:0 32px 32px;">
           <p style="color:#737373;font-size:12px;margin:0;border-top:1px solid #333;padding-top:16px;">
-            Provigator — Awesomity Uptime Monitor
+            Provigator | Awesomity Uptime Monitor
           </p>
         </td></tr>
       </table>

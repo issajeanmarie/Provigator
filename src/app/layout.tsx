@@ -1,6 +1,6 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Provigator — Awesomity Uptime Monitor",
+  title: "Provigator | Awesomity Uptime Monitor",
   description: "Internal uptime monitoring dashboard for Awesomity projects",
 };
 
