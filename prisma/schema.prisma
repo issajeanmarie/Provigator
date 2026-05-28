@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Project {
+  id            String          @id @default(uuid())
+  name          String
+  clientName    String
+  url           String          @unique
+  thumbnail     String?
+  currentStatus String          @default("CHECKING")
+  responseTime  Int?
+  lastCheckedAt DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  monitoringLogs MonitoringLog[]
+
+  @@index([currentStatus])
+  @@index([url])
+}
+
+model MonitoringLog {
+  id           String   @id @default(uuid())
+  projectId    String
+  status       String
+  responseTime Int?
+  errorMessage String?
+  checkedAt    DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([checkedAt])
+  @@index([projectId, checkedAt])
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  email     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}
