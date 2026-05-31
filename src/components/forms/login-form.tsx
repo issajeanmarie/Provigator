@@ -1,12 +1,14 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { loginAction } from "@/actions/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <form action={formAction} className="space-y-5">
@@ -26,6 +28,8 @@ export function LoginForm() {
         required
         autoComplete="email"
         autoFocus
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <Input
@@ -37,6 +41,8 @@ export function LoginForm() {
         error={state?.fieldErrors?.password?.[0]}
         required
         autoComplete="current-password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <Button type="submit" loading={isPending} className="w-full">
