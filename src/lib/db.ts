@@ -6,9 +6,10 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL!,
-  });
+  const connectionString =
+    process.env.POSTGRES_PRISMA_URL ?? process.env.DATABASE_URL;
+  if (!connectionString) throw new Error("No database connection string set");
+  const adapter = new PrismaPg({ connectionString });
   return new PrismaClient({ adapter });
 }
 
