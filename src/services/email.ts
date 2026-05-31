@@ -1,4 +1,4 @@
-import { getAllActiveSessions } from "@/lib/auth";
+import { db } from "@/lib/db";
 import nodemailer from "nodemailer";
 
 function getTransporter() {
@@ -121,9 +121,27 @@ function recoveryEmailHtml(data: {
 }
 
 async function getRecipients(): Promise<string[]> {
-  const sessions = await getAllActiveSessions();
-  const uniqueEmails = [...new Set(sessions.map((s) => s.email))];
-  return uniqueEmails.length > 0 ? uniqueEmails : [];
+  const rows = await db.session.findMany({
+    distinct: ["email"],
+    select: { email: true },
+  });
+  return rows.map((r) => r.email);
+}
+
+function getSender(): string {
+  // Gmail requires the From address to match the authenticated account
+  const user = process.env.SMTP_USER ?? "";
+  const customFrom = process.env.SMTP_FROM;
+  if (customFrom) {
+    // If SMTP_FROM is a display-name format like "Name <addr>", keep it only
+    // when the email address inside matches SMTP_USER (works with Gmail).
+    // Otherwise fall back to just SMTP_USER so Gmail doesn't reject the mail.
+    const match = customFrom.match(/<([^>]+)>/);
+    if (!match || match[1].toLowerCase() === user.toLowerCase()) {
+      return customFrom;
+    }
+  }
+  return `Provigator <${user}>`;
 }
 
 export async function sendDownAlert(data: {
@@ -143,7 +161,7 @@ export async function sendDownAlert(data: {
 
   const transporter = getTransporter();
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || "Provigator <monitor@awesomity.rw>",
+    from: getSender(),
     to: recipients.join(", "),
     subject: `🔴 DOWN: ${data.projectName} (${data.clientName})`,
     html: downEmailHtml(data),
@@ -166,7 +184,7 @@ export async function sendRecoveryAlert(data: {
 
   const transporter = getTransporter();
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || "Provigator <monitor@awesomity.rw>",
+    from: getSender(),
     to: recipients.join(", "),
     subject: `🟢 RECOVERED: ${data.projectName} (${data.clientName})`,
     html: recoveryEmailHtml(data),
