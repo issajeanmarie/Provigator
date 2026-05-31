@@ -13,9 +13,17 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // First check
     await monitorAllProjects();
+
+    // Wait 30 seconds, then check again — gives ~30s effective interval
+    // while staying within Vercel's 1-minute minimum cron schedule.
+    await new Promise((r) => setTimeout(r, 30_000));
+    await monitorAllProjects();
+
     return NextResponse.json({
       success: true,
+      checks: 2,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
