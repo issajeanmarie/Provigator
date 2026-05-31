@@ -1,4 +1,3 @@
-import { chromium } from "playwright";
 import path from "path";
 import fs from "fs";
 
@@ -16,6 +15,14 @@ export async function captureScreenshot(
   url: string,
   projectId: string
 ): Promise<string | null> {
+  let chromium: import("playwright").BrowserType;
+  try {
+    const playwright = await import("playwright");
+    chromium = playwright.chromium;
+  } catch {
+    return null;
+  }
+
   ensureDir();
   const filename = `${projectId}.png`;
   const filepath = path.join(SCREENSHOTS_DIR, filename);

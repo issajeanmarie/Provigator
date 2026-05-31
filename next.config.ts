@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [],
   },
-  serverExternalPackages: ["playwright", "better-sqlite3"],
+  serverExternalPackages: ["playwright"],
 };
 
 export default nextConfig;
